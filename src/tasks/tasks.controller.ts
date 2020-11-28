@@ -10,6 +10,21 @@ export class TasksController {
 
     constructor(private taskService: TasksService) {}
 
+    @Get()
+    getTasksMongo(): Promise<Task[]>{
+        return this.taskService.getTasks()
+    }
+    @Get(':taskid')
+    getTaskMongo(@Param('taskid')taskId: string){
+        return this.taskService.getTask(taskId)
+    } 
+    @Post()
+    creteTaskMongo(@Body() task: CreateTaskDto): Promise<Task>{
+        return this.taskService.createTask(task)
+    }
+
+    //Sin mongo
+    /*
     @Get() 
     getTasks(): Task[]{
         return this.taskService.getTasks()
@@ -69,5 +84,5 @@ export class TasksController {
     getTaskExpress(@Req() req, @Res() res): Response{
         console.log(req.body)
         return res.send("Hello express")
-    }
+    }*/
 }

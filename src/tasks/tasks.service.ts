@@ -1,11 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { from } from 'rxjs';
 import { Task } from "./interfaces/Task"
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { CreateTaskDto } from './dto/create-task.dto';
 
 @Injectable()
 export class TasksService {
+    //         - - - - - - - - v  igual al nombre del Modulo 
+    constructor(@InjectModel('Task') private taskModel: Model<Task>) {}
 
-    tasks: Task[] = [
+    async getTasks():Promise<Task[]>{
+        return await this.taskModel.find().exec()
+    }
+
+    async getTask(id: string):Promise<Task>{
+        return await this.taskModel.findById(id).exec()
+    }
+
+    async createTask(task: CreateTaskDto): Promise<Task>{
+        const newTask = new this.taskModel(task)
+        console.log(newTask)
+        console.log('saved')
+        return await newTask.save() //para guardar en la base mongo
+    }
+    /*
+    //Sin Base Mongo
+    private tasks: Task[] = [
         {
             id: 1,
             title: "Testing",
@@ -32,6 +52,6 @@ export class TasksService {
 
     getTask(id: number): Task{
         return this.tasks.find(task => task.id === id)
-    }
-
+    }*/
+    
 }
